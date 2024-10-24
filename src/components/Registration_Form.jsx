@@ -3,18 +3,22 @@ import { useForm } from 'react-hook-form'
 import '../style/registration_form.css'
 
 export default function Registration_Form() {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  function onSubmit(data) {
-        console.log(data);
+  const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm();
+  async function onSubmit(data) {
+    const promise = await new Promise((resolve) => {
+      setTimeout(resolve, 5000);
+    })
+    console.log(data);
+    reset();
   }
-  function validatePassword(value){
-        if(value===''){
-            return "please fill in this field";
-        }else if(value!=watch('password')){
-            return "password is incorrect";
-        }else{
-            return true;
-        }
+  function validatePassword(value) {
+    if (value === '') {
+      return "please fill in this field";
+    } else if (value != watch('password')) {
+      return "password is incorrect";
+    } else {
+      return true;
+    }
   }
   return (
     <div className='form-container' onSubmit={handleSubmit(onSubmit)}>
@@ -39,11 +43,11 @@ export default function Registration_Form() {
           {errors.password && <p className='error-msg'>{errors.password.message}</p>}
         </div>
         <div>
-          <input {...register("repeatPassword", {validate:validatePassword})} placeholder='Confirm Password' />
+          <input {...register("repeatPassword", { validate: validatePassword })} placeholder='Confirm Password' />
           {errors.repeatPassword && <p className='error-msg'>{errors.repeatPassword.message}</p>}
         </div>
         <div>
-          <button className='submit'>Create an Account</button>
+          <button className='submit' disabled={isSubmitting}>Create an Account</button>
         </div>
       </form>
     </div>
